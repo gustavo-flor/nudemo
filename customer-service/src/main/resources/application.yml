@@ -1,0 +1,10 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+spring:
+  application:
+    name: customer-service
+  data:
+    mongodb:
+      auto-index-creation: true
+      uri: ${MONGODB_URI:mongodb://localhost:27017/customer-service}
