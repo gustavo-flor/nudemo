@@ -1,0 +1,14 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: customerService_subscribe
+          uri: ${CUSTOMER_SERVICE_URI}
+          predicates:
+            - Method=POST
+            - Path=/customers

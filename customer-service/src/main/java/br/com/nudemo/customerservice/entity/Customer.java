@@ -1,6 +1,7 @@
 package br.com.nudemo.customerservice.entity;
 
 import br.com.nudemo.customerservice.dto.CustomerSubscribeDTO;
+import br.com.nudemo.customerservice.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -24,7 +25,7 @@ public class Customer {
 
     public static Customer of(final CustomerSubscribeDTO dto) {
         final Customer customer = new Customer();
-        customer.setCpf(dto.cpf());
+        customer.setCpf(StringUtil.getOnlyNumbers(dto.cpf()));
         customer.setName(dto.name());
         customer.setEmail(dto.email());
         return customer;
