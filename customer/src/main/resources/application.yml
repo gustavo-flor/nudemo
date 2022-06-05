@@ -1,0 +1,40 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+springdoc:
+  swagger-ui:
+    path: /
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: customer-application
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/nudemo}
+  cloud:
+    stream:
+      kafka:
+        binder:
+          auto-add-partitions: true
+          auto-create-topics: true
+          brokers: localhost:19092,localhost:29092,localhost:39092
+        bindings:
+          customerSubscribed-event-in-0:
+            consumer:
+              enable-dlq: false
+      bindings:
+        customerSubscribed-event-out-0:
+          group: ${spring.application.name}
+          destination: customer-subscribed_event
+          content-type: application/json
+          producer:
+            partition-key-expression: headers['X-Partition-Key']
+        customerCreated-event-out-0:
+          group: ${spring.application.name}
+          destination: customer-created_event
+          content-type: application/json
+        customerSubscribed-event-in-0:
+          group: ${spring.application.name}
+          destination: customer-subscribed_event
+          content-type: application/json

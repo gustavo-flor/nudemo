@@ -1,0 +1,36 @@
+server:
+  port: ${PORT:8081}
+  shutdown: graceful
+springdoc:
+  swagger-ui:
+    path: /
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: account-application
+  datasource:
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/nudemo}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:migrations/changelog.yml
+  cloud:
+    stream:
+      kafka:
+        binder:
+          auto-add-partitions: true
+          auto-create-topics: true
+          brokers: localhost:19092,localhost:29092,localhost:39092
+        bindings:
+          customerCreated-event-in-0:
+            consumer:
+              enable-dlq: false
+      bindings:
+        customerCreated-event-in-0:
+          group: ${spring.application.name}
+          destination: customer-created_event
+          content-type: application/json
