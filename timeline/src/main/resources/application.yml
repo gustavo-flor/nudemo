@@ -1,0 +1,54 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: timeline-application
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/timeline}
+  cloud:
+    stream:
+      kafka:
+        binder:
+          auto-add-partitions: true
+          auto-create-topics: true
+          brokers: localhost:19092,localhost:29092,localhost:39092
+        bindings:
+          moneySaved-event-in-0:
+            consumer:
+              enable-dlq: true
+          moneyRescued-event-in-0:
+            consumer:
+              enable-dlq: true
+          moneySaved-event-DLQ-in-0:
+            consumer:
+              enable-dlq: false
+          moneyRescued-event-DLQ-in-0:
+            consumer:
+              enable-dlq: false
+      bindings:
+        moneySaved-event-in-0:
+          group: ${spring.application.name}
+          destination: money-saved_event
+          content-type: application/json
+        moneyRescued-event-in-0:
+          group: ${spring.application.name}
+          destination: money-rescued_event
+          content-type: application/json
+        moneySaved-event-DLQ-in-0:
+          group: ${spring.application.name}
+          destination: error.money-saved_event.${spring.application.name}
+          content-type: application/json
+          consumer:
+            max-attempts: 3
+            back-off-initial-interval: 15000
+        moneyRescued-event-DLQ-in-0:
+          group: ${spring.application.name}
+          destination: error.money-rescued_event.${spring.application.name}
+          content-type: application/json
+          consumer:
+            max-attempts: 3
+            back-off-initial-interval: 15000

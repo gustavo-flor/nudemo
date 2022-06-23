@@ -11,7 +11,7 @@ spring:
     name: customer-application
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/nudemo}
+      uri: ${MONGODB_URI:mongodb://localhost:27017/customer}
   cloud:
     stream:
       kafka:
